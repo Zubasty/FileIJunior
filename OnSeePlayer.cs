@@ -1,22 +1,28 @@
 class Weapon
 {
-    private int _damage;
+    private readonly int _damage;
     private int _bullets;
 
-    public int Damage => _damage;
+    public bool CanFire => _bullets > 0;
 
-    public int Bullets => _bullets;
-
-    public bool TryFire(Player player = null)
+    public Weapon(int damage, int bullets)
     {
-        if (_bullets > 0)
+        _damage = damage;
+        _bullets = bullets;
+    }
+
+    public void AttackPlayer(Player player)
+    {
+        if (CanFire)
         {
-            if (player != null)
-                player.TakeDamage(Damage);
-            _bullets -= 1;
-            return true;
+            Fire();
+            player.TakeDamage(_damage);
         }
-        return false;
+    }
+
+    private void Fire()
+    {
+        _bullets -= 1;
     }
 }
 
@@ -24,12 +30,17 @@ class Player
 {
     private int _health;
 
+    public Player(int health)
+    {
+        _health = health;
+    }
+
     public int Health
     {
         get => _health;
         private set
         {
-            _health = Math.Max(0, _health - value);
+            _health = Math.Max(0, _health + value);
         }
     }
 
@@ -41,10 +52,15 @@ class Player
 
 class Bot
 {
-    private Weapon _weapon;
+    private readonly Weapon _weapon;
+
+    public Bot(Weapon weapon)
+    {
+        _weapon = weapon;
+    }
 
     public void OnSeePlayer(Player player)
     {
-        _weapon.TryFire(player);
+        _weapon.AttackPlayer(player);
     }
 }
