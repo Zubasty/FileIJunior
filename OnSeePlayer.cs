@@ -15,14 +15,13 @@ class Weapon
     {
         if (CanFire)
         {
-            Fire();
+            _bullets -= 1;
             player.TakeDamage(_damage);
         }
-    }
-
-    private void Fire()
-    {
-        _bullets -= 1;
+        else
+        {
+            throw new System.Exception("Нет патронов для атаки игрока");
+        }
     }
 }
 
